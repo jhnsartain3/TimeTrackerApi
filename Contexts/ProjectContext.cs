@@ -6,25 +6,25 @@ using Models;
 
 namespace Contexts
 {
-    public interface IEventContext : IUserSpecificDatabaseAccess<EventModel>
+    public interface IProjectContext : IUserSpecificDatabaseAccess<ProjectModel>
     {
     }
 
-    public class EventContext : MongoUserSpecificDatabaseAccess<EventModel>, IEventContext
+    public class ProjectContext : MongoUserSpecificDatabaseAccess<ProjectModel>, IProjectContext
     {
-        public EventContext(IConfiguration configuration) : base(configuration)
+        public ProjectContext(IConfiguration configuration) : base(configuration)
         {
             var connectionModel = new ConnectionModel
             {
                 ConnectionString = configuration["ConnectionStrings:TimeTrackerDatabaseServer"],
                 DatabaseName = configuration["DatabaseNames:TimeTracker"],
                 CollectionName =
-                    configuration[$"CollectionNames:{nameof(EventContext).Substring(0, nameof(EventContext).Length - ("Context".Length))}"]
+                    configuration[$"CollectionNames:{nameof(ProjectContext).Substring(0, nameof(ProjectContext).Length - ("Context".Length))}"]
             };
 
             SetupConnectionAsync(connectionModel);
 
-            Items = MongoDatabase.GetCollection<EventModel>(connectionModel.CollectionName);
+            Items = MongoDatabase.GetCollection<ProjectModel>(connectionModel.CollectionName);
         }
     }
 }
