@@ -10,6 +10,7 @@ namespace Services
 {
     public interface IEventService : ISpecificUserDataAccess<EventModel>
     {
+        Task<IEnumerable<EventModel>> GetAllByIdAsync(string userId, string idd);
     }
 
     public class EventService : IEventService
@@ -21,6 +22,18 @@ namespace Services
         {
             _eventConsumable = eventConsumable;
             _loggerWrapper = loggerWrapper;
+        }
+
+        public async Task<IEnumerable<EventModel>> GetAllByIdAsync(string userId, string id)
+        {
+            _loggerWrapper.LogInformation($"Get All Event Model By Id: {id}", GetType().Name, nameof(GetByIdAsync), null);
+
+            var allModels = await GetAllAsync(userId);
+
+            return allModels
+                .Where(x => x.ProjectId.Equals(id))
+                .Select(x => x)
+                .OrderByDescending(x => x.StartDateTime);
         }
 
         public async Task<IEnumerable<EventModel>> GetAllAsync(string userId)

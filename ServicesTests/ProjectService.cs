@@ -27,41 +27,41 @@ namespace ServicesTests
         };
 
         private Mock<ILoggerWrapper> _loggerWrapperMock;
-        private Mock<IProjectConsumable> _userConsumableMock;
-        private ProjectService _userService;
+        private Mock<IProjectConsumable> _eventConsumable;
+        private ProjectService _projectService;
 
         [SetUp]
         public void Setup()
         {
             _loggerWrapperMock = new Mock<ILoggerWrapper>();
-            _userConsumableMock = new Mock<IProjectConsumable>();
+            _eventConsumable = new Mock<IProjectConsumable>();
 
-            _userService = new ProjectService(_loggerWrapperMock.Object, _userConsumableMock.Object);
+            _projectService = new ProjectService(_loggerWrapperMock.Object, _eventConsumable.Object);
         }
 
         [Test]
         public async Task GetAllAsync_CallsGetAllAsyncOnceAsync()
         {
-            await _userService.GetAllAsync(SampleUserId1);
+            await _projectService.GetAllAsync(SampleUserId1);
 
-            _userConsumableMock.Verify(x => x.GetAllAsync(SampleUserId1), Times.Once());
+            _eventConsumable.Verify(x => x.GetAllAsync(SampleUserId1), Times.Once());
         }
 
         [Test]
         public async Task GetByIdAsync_CallsGetByIdAsyncOnce()
         {
-            await _userService.GetByIdAsync(SampleUserId1, SampleId1);
+            await _projectService.GetByIdAsync(SampleUserId1, SampleId1);
 
-            _userConsumableMock.Verify(x => x.GetByIdAsync(SampleUserId1, SampleId1), Times.Once());
+            _eventConsumable.Verify(x => x.GetByIdAsync(SampleUserId1, SampleId1), Times.Once());
         }
 
         [Test]
         public async Task GetByIdAsync_ReturnsModelWithSpecifiedId()
         {
-            _userConsumableMock.Setup(x => x.GetByIdAsync(SampleUserId1, SampleId1))
+            _eventConsumable.Setup(x => x.GetByIdAsync(SampleUserId1, SampleId1))
                 .Returns(Task.FromResult(ProjectModel1));
 
-            var result = await _userService.GetByIdAsync(SampleUserId1, SampleId1);
+            var result = await _projectService.GetByIdAsync(SampleUserId1, SampleId1);
 
             Assert.AreEqual(SampleId1, result.Id);
         }
@@ -69,25 +69,25 @@ namespace ServicesTests
         [Test]
         public async Task UpdateAsync()
         {
-            await _userService.UpdateAsync(SampleUserId1, SampleId1, ProjectModel1);
+            await _projectService.UpdateAsync(SampleUserId1, SampleId1, ProjectModel1);
 
-            _userConsumableMock.Verify(x => x.UpdateAsync(SampleUserId1, SampleId1, ProjectModel1), Times.Once());
+            _eventConsumable.Verify(x => x.UpdateAsync(SampleUserId1, SampleId1, ProjectModel1), Times.Once());
         }
 
         [Test]
         public async Task CreateAsync()
         {
-            await _userService.CreateAsync(SampleUserId1, ProjectModel1);
+            await _projectService.CreateAsync(SampleUserId1, ProjectModel1);
 
-            _userConsumableMock.Verify(x => x.CreateAsync(SampleUserId1, ProjectModel1), Times.Once());
+            _eventConsumable.Verify(x => x.CreateAsync(SampleUserId1, ProjectModel1), Times.Once());
         }
 
         [Test]
         public async Task DeleteAsync()
         {
-            await _userService.DeleteAsync(SampleUserId1, SampleId1);
+            await _projectService.DeleteAsync(SampleUserId1, SampleId1);
 
-            _userConsumableMock.Verify(x => x.DeleteAsync(SampleUserId1, SampleId1), Times.Once());
+            _eventConsumable.Verify(x => x.DeleteAsync(SampleUserId1, SampleId1), Times.Once());
         }
     }
 }

@@ -17,9 +17,18 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventModel>>> GetAll(string userId)
         {
-            LoggerWrapper.LogInformation("Get All Events Models", GetType().Name, nameof(GetAll), null);
+            LoggerWrapper.LogInformation("Get All Event Models", GetType().Name, nameof(GetAll), null);
 
             return Ok(await EventService.GetAllAsync(userId));
+        }
+
+        // GET: api/Event/ByProjectId/5
+        [HttpGet("ByProjectId/{id}")]
+        public async Task<ActionResult<IEnumerable<EventModel>>> GetAllById(string userId, string id)
+        {
+            LoggerWrapper.LogInformation($"Get all event models with project id: {id}", this.GetType().Name, nameof(GetAllById), null);
+
+            return Ok(await EventService.GetAllByIdAsync(userId, id));
         }
 
         // GET: api/Event/5
