@@ -21,7 +21,7 @@ namespace Models
         public DateTime StartDateTime { get; set; }
 
         [BsonElement("enddatetime")]
-        [DataType(DataType.Time)]
+        [DataType(DataType.DateTime)]
         public DateTime? EndDateTime { get; set; }
 
         [BsonElement("description")]
