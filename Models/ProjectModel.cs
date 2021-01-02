@@ -12,7 +12,6 @@ namespace Models
         public string Name { get; set; }
 
         [BsonElement("description")]
-        [MinLength(3)]
         public string Description { get; set; }
 
         [BsonElement("group")] [MinLength(3)] public string Group { get; set; }
