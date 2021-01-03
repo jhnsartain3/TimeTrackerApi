@@ -116,6 +116,127 @@ namespace ServicesTests
         }
 
         [Test]
+        public async Task CanBeStopped_CallsGetAllAsyncOnceAsync()
+        {
+            var eventModels = new List<EventModel>
+            {
+                new EventModel
+                {
+                    Id = "1",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "2",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-21T12:00:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "3",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-22T13:00:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "4",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-21T18:13:00.000+00:00")
+                }
+            };
+
+            _eventConsumable.Setup(x => x.GetAllAsync(SampleUserId1)).Returns(Task.FromResult(eventModels.AsEnumerable()));
+
+            await _eventService.CanBeStopped(SampleUserId1, SampleId1);
+
+            _eventConsumable.Verify(x => x.GetAllAsync(SampleUserId1), Times.Once());
+        }
+
+        [Test]
+        public async Task CanBeStopped_ReturnsNotFoundExceptionIfNoRecordsExistsWithNullEndDateTime()
+        {
+            var eventModels = new List<EventModel>
+            {
+                new EventModel
+                {
+                    Id = "1",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00"),
+                    EndDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "2",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-21T12:00:00.000+00:00"),
+                    EndDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "3",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-22T13:00:00.000+00:00"),
+                    EndDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "4",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-21T18:13:00.000+00:00"),
+                    EndDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00")
+                }
+            };
+
+            _eventConsumable.Setup(x => x.GetAllAsync(SampleUserId1)).Returns(Task.FromResult(eventModels.AsEnumerable()));
+
+            var result = await _eventService.CanBeStopped(SampleUserId1, SampleId1);
+
+            Assert.AreEqual(null, result);
+        }
+
+        [Test]
+        public async Task CanBeStopped_ReturnsIdOfEventModelWithNullEndDateTime()
+        {
+            var eventModels = new List<EventModel>
+            {
+                new EventModel
+                {
+                    Id = "1",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00"),
+                    EndDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "2",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-21T12:00:00.000+00:00"),
+                    EndDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "3",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-22T13:00:00.000+00:00"),
+                    EndDateTime = DateTime.Parse("2020-06-22T12:30:00.000+00:00")
+                },
+                new EventModel
+                {
+                    Id = "4",
+                    ProjectId = SampleId1,
+                    StartDateTime = DateTime.Parse("2020-06-21T18:13:00.000+00:00")
+                }
+            };
+
+            _eventConsumable.Setup(x => x.GetAllAsync(SampleUserId1)).Returns(Task.FromResult(eventModels.AsEnumerable()));
+
+            var result = await _eventService.CanBeStopped(SampleUserId1, SampleId1);
+
+            Assert.AreEqual("4", result);
+        }
+
+        [Test]
         public async Task GetAllAsync_CallsGetAllAsyncOnceAsync()
         {
             await _eventService.GetAllAsync(SampleUserId1);

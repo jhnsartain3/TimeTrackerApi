@@ -11,6 +11,7 @@ namespace Services
     public interface IEventService : ISpecificUserDataAccess<EventModel>
     {
         Task<IEnumerable<EventModel>> GetAllByIdAsync(string userId, string id);
+        Task<string> CanBeStopped(string userId, string id);
     }
 
     public class EventService : IEventService
@@ -34,6 +35,20 @@ namespace Services
                 .Where(x => x.ProjectId.Equals(id))
                 .Select(x => x)
                 .OrderByDescending(x => x.StartDateTime);
+        }
+
+        public async Task<string> CanBeStopped(string userId, string id)
+        {
+            _loggerWrapper.LogInformation($"CanBeStopped: {id}", GetType().Name, nameof(GetByIdAsync), null);
+
+            var allModels = await GetAllAsync(userId);
+
+            var eventModelWithNullEndDateTime = allModels
+                .Where(x => x.ProjectId.Equals(id) && x.EndDateTime == null)
+                .Select(x => x)
+                .FirstOrDefault();
+
+            return eventModelWithNullEndDateTime?.Id;
         }
 
         public async Task<IEnumerable<EventModel>> GetAllAsync(string userId)

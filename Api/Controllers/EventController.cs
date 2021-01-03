@@ -52,7 +52,6 @@ namespace Api.Controllers
         }
 
         // POST: api/Event
-        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<EventModel>> Create(string userId, EventModel model)
         {
@@ -60,7 +59,7 @@ namespace Api.Controllers
 
             await EventService.CreateAsync(userId, model);
 
-            return Created(nameof(Create), new {id = model.Id});
+            return Created(nameof(Create), new { id = model.Id });
         }
 
         // DELETE: api/Event/5
@@ -72,6 +71,15 @@ namespace Api.Controllers
             await EventService.DeleteAsync(userId, id);
 
             return NoContent();
+        }
+
+        // GET: api/Event/CanBeStopped/
+        [HttpGet("CanBeStopped/{id}")]
+        public async Task<ActionResult<EventModel>> CanBeStopped(string userId, string id)
+        {
+            LoggerWrapper.LogInformation($"CanBeStopped: {id}", GetType().Name, nameof(CanBeStopped), null);
+
+            return Ok(new EventModel { Id = await EventService.CanBeStopped(userId, id) });
         }
     }
 }
