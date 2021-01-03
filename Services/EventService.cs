@@ -10,7 +10,7 @@ namespace Services
 {
     public interface IEventService : ISpecificUserDataAccess<EventModel>
     {
-        Task<IEnumerable<EventModel>> GetAllByIdAsync(string userId, string idd);
+        Task<IEnumerable<EventModel>> GetAllByIdAsync(string userId, string id);
     }
 
     public class EventService : IEventService
